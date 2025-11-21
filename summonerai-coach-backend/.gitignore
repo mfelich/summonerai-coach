@@ -22,7 +22,7 @@ out/
 /src/main/resources/application.properties
 /src/main/resources/application.yml
 
-../.env
+.env
 
 src/main/resources/application-*.properties
 src/main/resources/application-*.yml
