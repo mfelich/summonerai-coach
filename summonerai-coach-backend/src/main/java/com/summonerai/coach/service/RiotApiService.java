@@ -7,7 +7,5 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public interface RiotApiService {
-    Mono<SummonerInfoDto> getSummonerByName(String summonerName);
-    Mono<List<String>> getMatchHistoryIds(String summonerName);
     Mono<List<MatchStatsDto>> getStatsForPreviousMatches(String summonerName);
 }

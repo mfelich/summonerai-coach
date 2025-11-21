@@ -24,8 +24,7 @@ public class RiotApiServiceImpl implements RiotApiService {
         this.webClient = webClient;
     }
 
-    @Override
-    public Mono<SummonerInfoDto> getSummonerByName(String summonerName) {
+    private Mono<SummonerInfoDto> getSummonerByName(String summonerName) {
         String uri = String.format(
                 "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/EUW",
                 summonerName
@@ -37,8 +36,7 @@ public class RiotApiServiceImpl implements RiotApiService {
                 .bodyToMono(SummonerInfoDto.class);
     }
 
-    @Override
-    public Mono<List<String>> getMatchHistoryIds(String summonerName) {
+    private Mono<List<String>> getMatchHistoryIds(String summonerName) {
         return getSummonerByName(summonerName)
                 .flatMap(summoner -> {
                     String puuid = summoner.getPuuid();
@@ -51,20 +49,6 @@ public class RiotApiServiceImpl implements RiotApiService {
                             .uri(uri)
                             .retrieve()
                             .bodyToMono(new ParameterizedTypeReference<List<String>>() {});
-                });
-    }
-
-    @Override
-    public Mono<List<MatchStatsDto>> getStatsForPreviousMatches(String summonerName) {
-        return getSummonerByName(summonerName)
-                .flatMap(summoner -> {
-                    String puuid = summoner.getPuuid();
-
-                    return getMatchHistoryIds(summonerName)
-                            .flatMapMany(matchIds -> Flux.fromIterable(matchIds.stream().limit(10).toList()))
-                            .delayElements(Duration.ofMillis(250))
-                            .flatMap(matchId -> fetchSingleMatchStats(matchId, puuid), 2)
-                            .collectList();
                 });
     }
 
@@ -96,6 +80,20 @@ public class RiotApiServiceImpl implements RiotApiService {
                     statsDto.setPlayerStats(playerStats);
 
                     return statsDto;
+                });
+    }
+
+    @Override
+    public Mono<List<MatchStatsDto>> getStatsForPreviousMatches(String summonerName) {
+        return getSummonerByName(summonerName)
+                .flatMap(summoner -> {
+                    String puuid = summoner.getPuuid();
+
+                    return getMatchHistoryIds(summonerName)
+                            .flatMapMany(matchIds -> Flux.fromIterable(matchIds.stream().limit(10).toList()))
+                            .delayElements(Duration.ofMillis(250))
+                            .flatMap(matchId -> fetchSingleMatchStats(matchId, puuid), 2)
+                            .collectList();
                 });
     }
 }

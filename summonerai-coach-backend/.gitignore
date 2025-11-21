@@ -19,7 +19,10 @@ out/
 *.iws
 out/
 
-.env
+/src/main/resources/application.properties
+/src/main/resources/application.yml
+
+../.env
 
 src/main/resources/application-*.properties
 src/main/resources/application-*.yml
