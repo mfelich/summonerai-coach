@@ -1,4 +1,4 @@
-package com.summonerai.coach.dto;
+package com.summonerai.coach.dto.summoner;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayerMatchStatsDto {
+public class SummonerMatchStatsDto {
 
     @JsonProperty("puuid")
     private String puuid;

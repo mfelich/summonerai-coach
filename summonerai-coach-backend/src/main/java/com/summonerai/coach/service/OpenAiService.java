@@ -1,8 +1,9 @@
 package com.summonerai.coach.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.summonerai.coach.dto.OpenAiReposne;
+import com.summonerai.coach.dto.analysis.PlayerAnalysisResponseDto;
+import com.summonerai.coach.dto.analysis.PlayerAnalysisRequestDto;
 
 public interface OpenAiService {
-    OpenAiReposne analyzePlayerBySummonerName(String prompt) throws JsonProcessingException;
+    PlayerAnalysisResponseDto analyzePlayerBySummonerName(PlayerAnalysisRequestDto prompt) throws JsonProcessingException;
 }

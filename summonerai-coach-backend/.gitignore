@@ -19,16 +19,9 @@ out/
 *.iws
 out/
 
-/src/main/resources/application.properties
-/src/main/resources/application.yml
-
 *.env
 
-**/application.properties
-
-src/main/resources/application-*.properties
-src/main/resources/application-*.yml
-
+/target/
 
 .DS_Store
 

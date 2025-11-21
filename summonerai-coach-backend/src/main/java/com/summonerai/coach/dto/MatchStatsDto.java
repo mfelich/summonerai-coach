@@ -1,6 +1,7 @@
 package com.summonerai.coach.dto;
 
-import com.summonerai.coach.dto.RiotApiResponse.Info;
+import com.summonerai.coach.dto.riot.RiotInfoDto;
+import com.summonerai.coach.dto.summoner.SummonerMatchStatsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,8 @@ import lombok.Setter;
 public class MatchStatsDto {
 
     //game info
-    private Info gameInfo;
+    private RiotInfoDto gameRiotInfoDto;
     //player stats
-    private PlayerMatchStatsDto playerStats;
+    private SummonerMatchStatsDto playerStats;
 
 }

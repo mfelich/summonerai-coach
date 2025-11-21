@@ -1,7 +1,7 @@
-package com.summonerai.coach.dto.RiotApiResponse;
+package com.summonerai.coach.dto.riot;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.summonerai.coach.dto.PlayerMatchStatsDto;
+import com.summonerai.coach.dto.summoner.SummonerMatchStatsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Info {
+public class RiotInfoDto {
 
     @JsonProperty("gameDuration")
     private long gameDuration;
@@ -29,6 +29,6 @@ public class Info {
     private int mapId;
 
     @JsonProperty("participants")
-    private List<PlayerMatchStatsDto> playerStats;
+    private List<SummonerMatchStatsDto> playerStats;
 
 }

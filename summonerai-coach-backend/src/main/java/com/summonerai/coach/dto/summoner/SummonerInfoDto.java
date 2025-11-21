@@ -1,4 +1,4 @@
-package com.summonerai.coach.dto.RiotApiResponse;
+package com.summonerai.coach.dto.summoner;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RiotMatchReponse {
-    private MetaData metadata;
-    private Info info;
+public class SummonerInfoDto {
+    private String puuid;
+    private String gameName;
+    private String tagLine;
 }

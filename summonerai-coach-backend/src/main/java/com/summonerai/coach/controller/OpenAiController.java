@@ -1,16 +1,14 @@
 package com.summonerai.coach.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.summonerai.coach.dto.OpenAiReposne;
+import com.summonerai.coach.dto.analysis.PlayerAnalysisResponseDto;
+import com.summonerai.coach.dto.analysis.PlayerAnalysisRequestDto;
 import com.summonerai.coach.service.OpenAiService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/ai-generate")
+@RequestMapping("/ai-analyze")
 public class OpenAiController {
 
     private OpenAiService service;
@@ -19,8 +17,8 @@ public class OpenAiController {
         this.service=service;
     }
 
-    @PostMapping("/{summonerName}")
-    public ResponseEntity<OpenAiReposne> analyzePlayer(@PathVariable("summonerName") String summonerName) throws JsonProcessingException {
-        return ResponseEntity.ok(service.analyzePlayerBySummonerName(summonerName));
+    @PostMapping
+    public ResponseEntity<PlayerAnalysisResponseDto> analyzePlayer(@RequestBody PlayerAnalysisRequestDto request) throws JsonProcessingException {
+        return ResponseEntity.ok(service.analyzePlayerBySummonerName(request));
     }
 }
