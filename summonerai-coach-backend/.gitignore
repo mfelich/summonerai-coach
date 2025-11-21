@@ -21,7 +21,7 @@ out/
 
 *.env
 
-/target/
+**/target/
 
 .DS_Store
 
