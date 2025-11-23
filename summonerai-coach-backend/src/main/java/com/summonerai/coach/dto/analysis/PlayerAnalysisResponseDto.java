@@ -21,8 +21,6 @@ public record PlayerAnalysisResponseDto(
 
         StatisticalTrends statisticalTrends,
 
-        Ratings ratings,
-
         List<String> recommendations
 ) {
 
@@ -45,14 +43,5 @@ public record PlayerAnalysisResponseDto(
             String goldEfficiency,
             String visionControlTrend,
             String objectiveControlTrend
-    ) {}
-
-    public record Ratings(
-            double mechanics,
-            double macro,
-            double positioning,
-            double teamfightImpact,
-            double mapAwareness,
-            double consistency
     ) {}
 }

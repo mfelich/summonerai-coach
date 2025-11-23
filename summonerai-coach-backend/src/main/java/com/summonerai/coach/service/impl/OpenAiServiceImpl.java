@@ -196,15 +196,6 @@ public class OpenAiServiceImpl implements OpenAiService {
                     "objectiveControlTrend": "string"
                   },
                 
-                  "ratings": {
-                    "mechanics": "double",
-                    "macro": "double",
-                    "positioning": "double",
-                    "teamfightImpact": "double",
-                    "mapAwareness": "double",
-                    "consistency": "double"
-                  },
-                
                   "recommendations": ["string"]
                 }
                 

@@ -6,8 +6,13 @@ import com.summonerai.coach.dto.summoner.SummonerInfoDto;
 import com.summonerai.coach.dto.riot.RiotInfoDto;
 import com.summonerai.coach.dto.summoner.SummonerMatchStatsDto;
 import com.summonerai.coach.dto.riot.RiotMatchDto;
+import com.summonerai.coach.exception.MatchHistoryNotFoundException;
+import com.summonerai.coach.exception.MatchStatsNotFoundException;
+import com.summonerai.coach.exception.RiotApiServerErrorException;
+import com.summonerai.coach.exception.SummonerNotFoundException;
 import com.summonerai.coach.service.RiotApiService;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -38,6 +43,10 @@ public class RiotApiServiceImpl implements RiotApiService {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new SummonerNotFoundException("Summoner not find with given name.")))
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new RiotApiServerErrorException("Riot API service error.")))
                 .bodyToMono(SummonerInfoDto.class);
     }
 
@@ -53,7 +62,17 @@ public class RiotApiServiceImpl implements RiotApiService {
                     return webClient.get()
                             .uri(uri)
                             .retrieve()
-                            .bodyToMono(new ParameterizedTypeReference<List<String>>() {});
+                            .onStatus(HttpStatusCode::is4xxClientError, response ->
+                                    Mono.error(new MatchHistoryNotFoundException("Match history not found for this summoner.")))
+                            .onStatus(HttpStatusCode::is5xxServerError, response ->
+                                    Mono.error(new RiotApiServerErrorException("Riot API service error.")))
+                            .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                            .flatMap(list -> {
+                                if (list == null || list.isEmpty()) {
+                                    return Mono.error(new MatchHistoryNotFoundException("Match history not found for this summoner."));
+                                }
+                                return Mono.just(list);
+                            });
                 });
     }
 
@@ -63,6 +82,10 @@ public class RiotApiServiceImpl implements RiotApiService {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new MatchStatsNotFoundException("Match stats not found.")))
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new RiotApiServerErrorException("Riot API service error.")))
                 .bodyToMono(RiotMatchDto.class)
                 .map(matchResponse -> {
                     // filtriraj samo tvog igrača
