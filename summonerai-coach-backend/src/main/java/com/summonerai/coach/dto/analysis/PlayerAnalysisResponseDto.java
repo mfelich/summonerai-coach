@@ -15,33 +15,5 @@ public record PlayerAnalysisResponseDto(
         String midGameAnalysis,
         String lateGameAnalysis,
 
-        LaneInsights laneSpecificInsights,
-
-        List<ChampionInsight> championInsights,
-
-        StatisticalTrends statisticalTrends,
-
         List<String> recommendations
-) {
-
-    public record LaneInsights(
-            String lane,
-            String analysis,
-            List<String> laneStrengths,
-            List<String> laneWeaknesses
-    ) {}
-
-    public record ChampionInsight(
-            String champion,
-            String analysis,
-            List<String> bestPractices
-    ) {}
-
-    public record StatisticalTrends(
-            String kdaTrend,
-            String damageOutputTrend,
-            String goldEfficiency,
-            String visionControlTrend,
-            String objectiveControlTrend
-    ) {}
-}
+) {}

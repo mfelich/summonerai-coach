@@ -11,6 +11,8 @@ import com.summonerai.coach.exception.MatchStatsNotFoundException;
 import com.summonerai.coach.exception.RiotApiServerErrorException;
 import com.summonerai.coach.exception.SummonerNotFoundException;
 import com.summonerai.coach.service.RiotApiService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -22,23 +24,28 @@ import java.time.Duration;
 import java.util.List;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class RiotApiServiceImpl implements RiotApiService {
 
     private final WebClient webClient;
 
-    public RiotApiServiceImpl(WebClient webClient) {
-        this.webClient = webClient;
-    }
-
     private Mono<SummonerInfoDto> getSummonerByName(PlayerAnalysisRequestDto request) {
 
+        log.info("Starting fetch data for summoner='{}', region='{}'",
+                request.getSummonerName(),
+                request.getRegion());
+
         String region = request.getRegion().toString().toLowerCase();
+        String summonerName = request.getSummonerName();
 
         String uri = String.format(
                 "https://%s.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/EUW",
                 region,
-                request.getSummonerName()
+                summonerName
         );
+
+        log.debug("Riot API URI: {}", uri);
 
         return webClient.get()
                 .uri(uri)
@@ -59,6 +66,8 @@ public class RiotApiServiceImpl implements RiotApiService {
                             puuid
                     );
 
+                    log.debug("Riot API MatchHistory URI: {}", uri);
+
                     return webClient.get()
                             .uri(uri)
                             .retrieve()
@@ -71,6 +80,8 @@ public class RiotApiServiceImpl implements RiotApiService {
                                 if (list == null || list.isEmpty()) {
                                     return Mono.error(new MatchHistoryNotFoundException("Match history not found for this summoner."));
                                 }
+
+                                log.info("Match history ids found for summoner {}, total matches found {}",request.getSummonerName(),list.size());
                                 return Mono.just(list);
                             });
                 });
@@ -78,6 +89,7 @@ public class RiotApiServiceImpl implements RiotApiService {
 
     private Mono<MatchStatsDto> fetchSingleMatchStats(String matchId, String puuid) {
         String uri = String.format("https://europe.api.riotgames.com/lol/match/v5/matches/%s", matchId);
+        log.debug("Riot API MatchStats URI: {}", uri);
 
         return webClient.get()
                 .uri(uri)
@@ -88,40 +100,41 @@ public class RiotApiServiceImpl implements RiotApiService {
                         Mono.error(new RiotApiServerErrorException("Riot API service error.")))
                 .bodyToMono(RiotMatchDto.class)
                 .map(matchResponse -> {
-                    // filtriraj samo tvog igrača
                     SummonerMatchStatsDto playerStats = matchResponse.getRiotInfoDto().getPlayerStats()
                             .stream()
                             .filter(p -> p.getPuuid().equalsIgnoreCase(puuid))
                             .findFirst()
                             .orElseThrow(() -> new RuntimeException("Summoner not found in match"));
 
-                    // Create info with basic match informations
                     RiotInfoDto gameRiotInfoDto = new RiotInfoDto();
                     gameRiotInfoDto.setGameId(matchResponse.getRiotInfoDto().getGameId());
                     gameRiotInfoDto.setGameDuration(matchResponse.getRiotInfoDto().getGameDuration());
                     gameRiotInfoDto.setGameMode(matchResponse.getRiotInfoDto().getGameMode());
                     gameRiotInfoDto.setMapId(matchResponse.getRiotInfoDto().getMapId());
 
-                    // Create MatchStatsDto for player with given puuid
-                    MatchStatsDto statsDto = new MatchStatsDto();
-                    statsDto.setGameRiotInfoDto(gameRiotInfoDto);
-                    statsDto.setPlayerStats(playerStats);
+                    MatchStatsDto stats = new MatchStatsDto();
+                    stats.setGameRiotInfoDto(gameRiotInfoDto);
+                    stats.setPlayerStats(playerStats);
 
-                    return statsDto;
+                    return stats;
                 });
     }
 
     @Override
     public Mono<List<MatchStatsDto>> getStatsForPreviousMatches(PlayerAnalysisRequestDto request) {
+        log.info("Fetching previous match stats for summoner '{}'", request.getSummonerName());
+
         return getSummonerByName(request)
                 .flatMap(summoner -> {
                     String puuid = summoner.getPuuid();
 
-                    return getMatchHistoryIds(request)
+                    Mono<List<MatchStatsDto>> matchStats = getMatchHistoryIds(request)
                             .flatMapMany(matchIds -> Flux.fromIterable(matchIds.stream().limit(10).toList()))
                             .delayElements(Duration.ofMillis(250))
                             .flatMap(matchId -> fetchSingleMatchStats(matchId, puuid), 2)
                             .collectList();
+
+                    return matchStats;
                 });
     }
 }

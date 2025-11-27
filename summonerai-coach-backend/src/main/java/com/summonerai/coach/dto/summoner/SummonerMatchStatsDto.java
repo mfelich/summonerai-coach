@@ -34,7 +34,6 @@ public class SummonerMatchStatsDto {
     @JsonProperty("assists")
     private int assists;
 
-
     //damage
     @JsonProperty("totalDamageDealt")
     private Integer totalDamageDealt;
@@ -102,6 +101,4 @@ public class SummonerMatchStatsDto {
     private Integer goldEarned;
     @JsonProperty("goldSpent")
     private Integer goldSpent;
-
-
 }

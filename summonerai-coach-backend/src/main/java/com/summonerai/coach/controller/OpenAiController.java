@@ -4,18 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.summonerai.coach.dto.analysis.PlayerAnalysisResponseDto;
 import com.summonerai.coach.dto.analysis.PlayerAnalysisRequestDto;
 import com.summonerai.coach.service.OpenAiService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ai-analyze")
+@RequiredArgsConstructor
 public class OpenAiController {
 
-    private OpenAiService service;
-
-    public OpenAiController(OpenAiService service) {
-        this.service=service;
-    }
+    private final OpenAiService service;
 
     @PostMapping
     public ResponseEntity<PlayerAnalysisResponseDto> analyzePlayer(@RequestBody PlayerAnalysisRequestDto request) throws JsonProcessingException {

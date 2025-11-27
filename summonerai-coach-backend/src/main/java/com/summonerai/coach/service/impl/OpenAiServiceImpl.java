@@ -7,27 +7,28 @@ import com.summonerai.coach.dto.analysis.PlayerAnalysisRequestDto;
 import com.summonerai.coach.dto.analysis.PlayerAnalysisResponseDto;
 import com.summonerai.coach.service.OpenAiService;
 import com.summonerai.coach.service.RiotApiService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.openai.api.common.OpenAiApiClientErrorException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class OpenAiServiceImpl implements OpenAiService {
 
-    private ChatClient chatClient;
-    private RiotApiService riotApiService;
-
-    public OpenAiServiceImpl(ChatClient chatClient, RiotApiService riotApiService) {
-        this.chatClient=chatClient;
-        this.riotApiService=riotApiService;
-    }
+    private final ChatClient chatClient;
+    private final RiotApiService riotApiService;
 
     private List<MatchStatsDto> getMatchStatsObjects(PlayerAnalysisRequestDto request) {
         Mono<List<MatchStatsDto>> mono = riotApiService.getStatsForPreviousMatches(request);
         List<MatchStatsDto> matchStatsList = mono.block();
 
+        log.info("Created list of match stats objects ready for AI anaysis for summoner {}", request.getSummonerName());
         return matchStatsList;
     }
 
@@ -173,29 +174,6 @@ public class OpenAiServiceImpl implements OpenAiService {
                   "midGameAnalysis": "string",
                   "lateGameAnalysis": "string",
                 
-                  "laneSpecificInsights": {
-                    "lane": "string",
-                    "analysis": "string",
-                    "laneStrengths": ["string"],
-                    "laneWeaknesses": ["string"]
-                  },
-                
-                  "championInsights": [
-                    {
-                      "champion": "string",
-                      "analysis": "string",
-                      "bestPractices": ["string"]
-                    }
-                  ],
-                
-                  "statisticalTrends": {
-                    "kdaTrend": "string",
-                    "damageOutputTrend": "string",
-                    "goldEfficiency": "string",
-                    "visionControlTrend": "string",
-                    "objectiveControlTrend": "string"
-                  },
-                
                   "recommendations": ["string"]
                 }
                 
@@ -203,10 +181,19 @@ public class OpenAiServiceImpl implements OpenAiService {
                 
                 """.formatted(statsJson,rank.toUpperCase());
 
+        try {
+            PlayerAnalysisResponseDto openAiResponseObject =
+                    chatClient.prompt(prompt)
+                            .call()
+                            .entity(PlayerAnalysisResponseDto.class);
 
-        return chatClient
-                .prompt(prompt)
-                .call()
-                .entity(PlayerAnalysisResponseDto.class);
+            log.info("Ai model finished analysing stats and created respone object for summoner {} ", request.getSummonerName());
+            return openAiResponseObject;
+        }
+        catch (Exception e) {
+            log.error("AI analysis failed for summoner {}", request.getSummonerName(), e);
+            throw new OpenAiApiClientErrorException("e");
+        }
+
     }
 }
