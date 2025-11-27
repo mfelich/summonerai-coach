@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.summonerai.coach.dto.analysis.PlayerAnalysisResponseDto;
 import com.summonerai.coach.dto.analysis.PlayerAnalysisRequestDto;
 import com.summonerai.coach.service.OpenAiService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class OpenAiController {
     private final OpenAiService service;
 
     @PostMapping
-    public ResponseEntity<PlayerAnalysisResponseDto> analyzePlayer(@RequestBody PlayerAnalysisRequestDto request) throws JsonProcessingException {
+    public ResponseEntity<PlayerAnalysisResponseDto> analyzePlayer(@Valid @RequestBody PlayerAnalysisRequestDto request) throws JsonProcessingException {
         return ResponseEntity.ok(service.analyzePlayerBySummonerName(request));
     }
 }
