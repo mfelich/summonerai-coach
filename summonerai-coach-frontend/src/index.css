@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+body{
+    background-color: #1E2A38;
+}
+
+.gold-color{
+    color: #FFD700;
+}
+
+.gray-color{
+    background-color: #F5F5F5;
+}
+
+.bg-primary {
+    background-color: #1E2A38;
+}
+
+.bg-secondary {
+  background: linear-gradient(90deg, #FFD700 0%, #FFE066 100%);
+}
