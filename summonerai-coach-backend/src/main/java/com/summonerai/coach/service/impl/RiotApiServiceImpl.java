@@ -17,9 +17,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class RiotApiServiceImpl implements RiotApiService {
                 request.getRegion());
 
         String region = request.getRegion().toString().toLowerCase();
-        String summonerName = request.getSummonerName();
+        String summonerName = UriUtils.encode(request.getSummonerName(), StandardCharsets.UTF_8);
 
         String uri = String.format(
                 "https://%s.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/EUW",
