@@ -105,7 +105,7 @@ const RequestForm = ({ setAnalysisResult }) => {
             <input
               type="text"
               id="summoner_name"
-              className="bg-gray-200 font-semibold border-default-medium text-heading text-sm rounded-base focus:ring-4 focus:ring-brand-medium focus:outline-none shadow-xsleading-5 block w-full px-3 py-2.5 text-gray-400 shadow-xs placeholder-gray-400 rounded-md"
+              className="bg-gray-200 text-black font-semibold border-default-medium text-heading text-sm rounded-base focus:ring-4 focus:ring-brand-medium focus:outline-none shadow-xsleading-5 block w-full px-3 py-2.5 shadow-xs placeholder-gray-400 rounded-md"
               placeholder="DoubleAIM"
               required
               value={summonerName}
@@ -130,7 +130,7 @@ const RequestForm = ({ setAnalysisResult }) => {
                   value="EUROPE"
                   checked={region === "EUROPE"}
                   onChange={() => setRegion("EUROPE")}
-                  className="w-4 h-4 rounded-full"
+                  className="w-4 h-4 rounded-full accent-purple-600"
                 />
                 <label
                   htmlFor="country-option-1"
@@ -147,7 +147,7 @@ const RequestForm = ({ setAnalysisResult }) => {
                   value="ASIA"
                   checked={region === "ASIA"}
                   onChange={() => setRegion("ASIA")}
-                  className="w-4 h-4 rounded-full"
+                  className="w-4 h-4 rounded-full accent-purple-600"
                 />
                 <label
                   htmlFor="country-option-2"
@@ -164,7 +164,7 @@ const RequestForm = ({ setAnalysisResult }) => {
                   value="CHINA"
                   checked={region === "CHINA"}
                   onChange={() => setRegion("CHINA")}
-                  className="w-4 h-4 rounded-full"
+                  className="w-4 h-4 rounded-full accent-purple-600"
                 />
                 <label
                   htmlFor="option-disabled"
@@ -185,7 +185,7 @@ const RequestForm = ({ setAnalysisResult }) => {
               <button
                 type="button"
                 onClick={toggleDropdown}
-                className="inline-flex items-center bg-white rounded-md font-bold justify-between w-full text-gray-400 bg-brand box-border borderfocus:outline-none hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xsleading-5 rounded-base text-sm px-4 py-2.5 mb-4 focus:outline-none"
+                className="inline-flex items-center bg-white rounded-md font-semibold justify-between w-full text-black bg-brand box-border borderfocus:outline-none hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xsleading-5 rounded-base text-sm px-4 py-2.5 mb-4 focus:outline-none"
               >
                 {selectedRank}
                 <svg
@@ -208,7 +208,14 @@ const RequestForm = ({ setAnalysisResult }) => {
               </button>
 
               {isDropdownOpen && (
-                <ul className="absolute z-20 mt-2 w-full bg-white border border-default-medium rounded-base shadow-lg max-h-60 overflow-y-auto">
+                <ul
+                  className="absolute z-20 w-full bg-white border border-default-medium rounded-lg shadow-lg max-h-60 overflow-y-auto 
+                  [&::-webkit-scrollbar]:w-2
+                [&::-webkit-scrollbar-track]:bg-gray-300
+                  [&::-webkit-scrollbar-track]:rounded-md
+                [&::-webkit-scrollbar-thumb]:bg-purple-400
+                  [&::-webkit-scrollbar-thumb]:rounded-md"
+                >
                   {ranks.map((rank) => (
                     <li key={rank}>
                       <button
