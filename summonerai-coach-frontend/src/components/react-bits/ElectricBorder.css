@@ -20,7 +20,6 @@
 .eb-content {
   position: relative;
   border-radius: inherit;
-  z-index: 1;
 }
 
 .eb-layers {
