@@ -91,7 +91,7 @@ const RequestForm = ({ setAnalysisResult }) => {
         </div>
       ) : (
         <form
-          className="w-[520px] bg-primary space-y-4 px-4 py-4 rounded-sm shadow-2xl"
+          className="w-full bg-primary space-y-4 px-4 py-4 rounded-sm shadow-2xl"
           onSubmit={handleSubmit}
         >
           {/* Summoner name input */}

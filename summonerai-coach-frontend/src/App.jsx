@@ -11,15 +11,17 @@ function App() {
 
   return (
     <div className="w-screen h-screen relative overflow-hidden">
-      <div className="absolute inset-0 flex items-center justify-center z-10 overflow-hidden">
-        <ElectricBorder
-          color="#FFE066"
-          speed={0.4}
-          chaos={0.6}
-          thickness={10}
-          style={{ borderRadius: 14 }}
-        >
-          <div className="bg-secondary rounded-2xl shadow-2xl px-6 py-4">
+      <div className="absolute inset-0 flex items-center justify-center z-10 overflow-hidden px-4 sm:px-6">
+        <div className="w-full max-w-[640px]">
+          <ElectricBorder
+            color="#FFE066"
+            speed={0.4}
+            chaos={0.6}
+            thickness={10}
+            style={{ borderRadius: 14 }}
+            className="w-full"
+          >
+            <div className="bg-secondary rounded-2xl shadow-2xl py-8 px-4 w-full">
             <div className="w-full flex items-center justify-center mb-4">
               <div className="w-1/6 flex items-center justify-end mr-2">
                 <img src={logo} alt="" className="w-[100px]" />
@@ -42,8 +44,9 @@ function App() {
                 <RequestForm setAnalysisResult={setAnalysisResult}/>
               )}
             </div>
-          </div>
-        </ElectricBorder>
+            </div>
+          </ElectricBorder>
+        </div>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ const ResponseData = ({ data, setAnalysisResult }) => {
 
   return (
     <>
-      <div className="w-[520px] bg-primary space-y-8 px-2 py-4 rounded-sm shadow-2xl">
+      <div className="w-full bg-primary space-y-8 px-2 py-4 rounded-sm shadow-2xl">
         <div
           className="text-white space-y-4 max-h-[500px] overflow-y-auto p-4   [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-gray-300
